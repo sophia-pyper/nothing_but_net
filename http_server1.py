@@ -14,14 +14,21 @@ print('The server is ready to receive')
 # (4) Do the following repeatedly:
 while True:
     # (a) Accept a new connection on the accept socket
-    connectionSocket, addr = serverSocket.accept()
-    if not connectionSocket:
-        break 
+    connectionSocket, addr = serverSocket.accept() 
     # (b) Read the HTTP request from the connection socket and parse it
-    sentence = connectionSocket.recv(1024).decode()
+    response = ""
+    while True:
+        sentence = connectionSocket.recv(1024).decode()
+        if not sentence:
+            break
+        response += sentence
+    print('THE RESPONSE IS...')
+    print response
+    index = response.find("GET")
+    print('INDEX IS...'), index
+    newResponse = response[5:]
+    
     # (c) Check to see if the requested file requested exists (and ends with ".htm" or ".html")
-    
-    
     capitalizedSentence = sentence.upper()
     connectionSocket.send(capitalizedSentence.encode())
     # (f) Close the connection socket
