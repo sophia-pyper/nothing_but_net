@@ -38,21 +38,30 @@ while True:
     # (e) If the file doesn't exist, construct a HTTP error response (404 Not Found) and write
     # it to the connection socket.  If the file does exist, but does not end with ".htm" or "html",
     # then write a "403 Forbidden" error response
+    header = ""
     if os.path.exists((newResponse.encode())):
         if not(newResponse.endswith("html") or newResponse.endswith("htm")):
             # 403
-            print('403')
-            connectionSocket.send("HTTP/1.1 403 Forbidden \n Content-Type: text/html; charset=utf-8")
+            header = "HTTP/1.1 403 Forbidden\n" + "Content-Type: text/html\r\n\r\n"
+            connectionSocket.send(header)
+            print('ERROR: 403 Forbidden')
         else:
             # 200
-            print('200')
             #connectionSocket.send(sentence)
             #html = newResponse.open()
-            connectionSocket.send("HTTP/1.1 200 OK \n Content-Type: text/html; charset=utf-8")
+            header = "HTTP/1.1 200 OK\n" + "Content-Type: text/html\r\n\r\n"
+            data = open(newResponse.encode(), 'r')
+            everything = ""
+            for d in data:
+                everything = everything + d
+            everything = header + everything
+            connectionSocket.send(everything)
+            print('200 OK')
     else:
         # 404
-        print('404')
-        connectionSocket.send("HTTP/1.1 404 Not Found \n Content-Type: text/html; charset=utf-8")
+        header = "HTTP/1.1 404 Not Found\n" + "Content-Type: text/html\r\n\r\n"
+        connectionSocket.send(header)
+        print('ERROR: 404 Not Found')
     #capitalizedSentence = sentence.upper()
     #connectionSocket.send(capitalizedSentence.encode())
     # (f) Close the connection socket
