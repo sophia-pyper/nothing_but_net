@@ -25,7 +25,7 @@ while True:
         response += sentence
     index = response.find("GET")
     newResponse = ""
-    for i in response[index+4:]:
+    for i in response[index+5:]:
         if i not in [" ","\\","\n","\r"]:
             newResponse += i
         else:
@@ -38,23 +38,21 @@ while True:
     # (e) If the file doesn't exist, construct a HTTP error response (404 Not Found) and write
     # it to the connection socket.  If the file does exist, but does not end with ".htm" or "html",
     # then write a "403 Forbidden" error response
-    print newResponse
     if os.path.exists((newResponse.encode())):
-        if (".htm" not in newResponse[:-5]) or (".html" not in newResponse[:-5]):
+        if not(newResponse.endswith("html") or newResponse.endswith("htm")):
             # 403
             print('403')
             connectionSocket.send("HTTP/1.1 403 Forbidden \n Content-Type: text/html; charset=utf-8")
         else:
             # 200
             print('200')
-            connectionSocket.send(sentence)
-            html = newResponse.open()
+            #connectionSocket.send(sentence)
+            #html = newResponse.open()
             connectionSocket.send("HTTP/1.1 200 OK \n Content-Type: text/html; charset=utf-8")
     else:
         # 404
         print('404')
         connectionSocket.send("HTTP/1.1 404 Not Found \n Content-Type: text/html; charset=utf-8")
-        print('YAY')
     #capitalizedSentence = sentence.upper()
     #connectionSocket.send(capitalizedSentence.encode())
     # (f) Close the connection socket
