@@ -21,7 +21,7 @@ def main():
             newIndex = response.find("Location:")
             newURL = ""
             for i in response[newIndex+10:]:
-                if i not in ["","\\","\n","\r"]:
+                if i not in [" ","\\","\n","\r"]:
                     newURL += i
                 else:
                     break
@@ -72,12 +72,6 @@ def parseURL(url):
     #Next, removes http from address string
     url = url[7:]
 
-    #Checks whether address has port and saves port
-    hasPort = url.find(":")
-    if (hasPort != -1):
-        port = int(url[hasPort+1:])
-        url = url[:hasPort]
-
     #Checks whether address has page specified
     slash = url.find("/")
     if (slash != -1):
@@ -85,6 +79,12 @@ def parseURL(url):
         url = url[:slash]
         if (len(pageRequest) > 1):
             getMessage = "GET "+pageRequest+" HTTP/1.0\r\nHost: "
+
+    #Checks whether address has port and saves port
+    hasPort = url.find(":")
+    if (hasPort != -1):
+        port = int(url[hasPort+1:])
+        url = url[:hasPort]
 
     #Adds parsed address as host
     newMessage = getMessage+url+"\r\n\r\n"
