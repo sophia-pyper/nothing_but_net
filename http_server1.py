@@ -2,6 +2,7 @@
 import sys
 from socket import *
 serverPort = int(sys.argv[1])
+import os.path
 
 # (1) Create a TCP socket on which to listen for new connections
 serverSocket = socket(AF_INET,SOCK_STREAM)
@@ -22,14 +23,39 @@ while True:
         if not sentence:
             break
         response += sentence
-    print('THE RESPONSE IS...')
-    print response
     index = response.find("GET")
-    print('INDEX IS...'), index
-    newResponse = response[5:]
-    
+    newResponse = ""
+    for i in response[index+4:]:
+        if i not in [" ","\\","\n","\r"]:
+            newResponse += i
+        else:
+            break
     # (c) Check to see if the requested file requested exists (and ends with ".htm" or ".html")
-    capitalizedSentence = sentence.upper()
-    connectionSocket.send(capitalizedSentence.encode())
+
+    # (d) If the file exists, construct the appropriate HTTP response, write the HTTP header to the connection
+    # socket, and then open the file and write its contents to the connection socket
+
+    # (e) If the file doesn't exist, construct a HTTP error response (404 Not Found) and write
+    # it to the connection socket.  If the file does exist, but does not end with ".htm" or "html",
+    # then write a "403 Forbidden" error response
+    print newResponse
+    if os.path.exists((newResponse.encode())):
+        if (".htm" not in newResponse[:-5]) or (".html" not in newResponse[:-5]):
+            # 403
+            print('403')
+            connectionSocket.send("HTTP/1.1 403 Forbidden \n Content-Type: text/html; charset=utf-8")
+        else:
+            # 200
+            print('200')
+            connectionSocket.send(sentence)
+            html = newResponse.open()
+            connectionSocket.send("HTTP/1.1 200 OK \n Content-Type: text/html; charset=utf-8")
+    else:
+        # 404
+        print('404')
+        connectionSocket.send("HTTP/1.1 404 Not Found \n Content-Type: text/html; charset=utf-8")
+        print('YAY')
+    #capitalizedSentence = sentence.upper()
+    #connectionSocket.send(capitalizedSentence.encode())
     # (f) Close the connection socket
     connectionSocket.close()
