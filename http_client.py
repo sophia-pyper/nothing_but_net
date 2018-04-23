@@ -13,7 +13,7 @@ def main():
         #increment counter and kill function if there are too many redirects
         redirectCounter += 1
         if (redirectCounter >= 10):
-            sys.stderr.write("Error: too many redirects.")
+            sys.stderr.write("Error: too many redirects.\n")
             client.close()
             sys.exit(-1)
         #Otherwise, get new URL and try again
@@ -43,7 +43,7 @@ def main():
             sys.exit(0)
         #Otherwise, output error message and close
         else:
-            sys.stderr.write("Error: Page returned a non-text/html content-type")
+            sys.stderr.write("Error: Page returned a non-text/html content-type\n")
             client.close()
             sys.exit(-1)
 
@@ -53,7 +53,7 @@ def main():
         sys.exit(-1)
 
     else:
-        errMessage = "Received unexpected error code "+ str(statusCode)
+        errMessage = "Received unexpected error code "+ str(statusCode)+".\n"
         sys.stderr.write(errMessage)
         client.close()
         sys.exit(-1)
@@ -66,7 +66,7 @@ def parseURL(url):
     getMessage = "GET / HTTP/1.0\r\nHost: "
     #Check whether address is http, kill program if not
     if "http://" not in url:
-        sys.stderr.write("Error: address does not begin with 'http://'")
+        sys.stderr.write("Error: address does not begin with 'http://'\n")
         sys.exit(-1)
 
     #Next, removes http from address string
