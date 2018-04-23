@@ -17,12 +17,7 @@ while True:
     # (a) Accept a new connection on the accept socket
     connectionSocket, addr = serverSocket.accept() 
     # (b) Read the HTTP request from the connection socket and parse it
-    response = ""
-    while True:
-        sentence = connectionSocket.recv(1024).decode()
-        if not sentence:
-            break
-        response += sentence
+    response = connectionSocket.recv(1024).decode()
     index = response.find("GET")
     newResponse = ""
     for i in response[index+5:]:
@@ -57,7 +52,7 @@ while True:
             everything = header + everything
             connectionSocket.send(everything)
             print('200 OK')
-    else:
+    elif not(os.path.exists((newResponse.encode()))):
         # 404
         header = "HTTP/1.1 404 Not Found\n" + "Content-Type: text/html\r\n\r\n"
         connectionSocket.send(header)
